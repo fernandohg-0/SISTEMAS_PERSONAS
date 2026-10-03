@@ -1,0 +1,6 @@
+mx\edu\tesoem\sistemapersonas\SistemaPersonas.class
+mx\edu\tesoem\sistemapersonas\dao\impl\PersonaDAOImpl.class
+mx\edu\tesoem\sistemapersonas\dao\PersonaDAO.class
+mx\edu\tesoem\sistemapersonas\conexion\JPAUtil.class
+mx\edu\tesoem\sistemapersonas\modelo\Persona.class
+mx\edu\tesoem\sistemapersonas\prueba\PruebaPersona.class
