@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Personas</title>
+  <meta name="description" content="Aplicación de consola en Java que administra personas en MySQL con JPA, Hibernate y el patrón DAO.">
+  <style>
+    :root {
+      --ink: #1c1915;
+      --muted: #5e574c;
+      --line: #e4d9c8;
+      --paper: #f6f1e8;
+      --card: #fffdf9;
+      --teal: #1a4a45;
+      --teal-soft: #e7f2ef;
+      --copper: #9a4b24;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 100% -10%, #f3e2cc 0%, transparent 60%),
+        var(--paper);
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: var(--copper); }
+
+    .wrap {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 0;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .repo {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 18px 0 8px;
+    }
+
+    .kicker {
+      color: var(--teal);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin: 0 0 10px;
+    }
+
+    h1 {
+      font-family: Georgia, "Palatino Linotype", serif;
+      font-size: clamp(40px, 6vw, 64px);
+      line-height: 0.95;
+      font-weight: 600;
+      margin: 0 0 16px;
+    }
+
+    .lead {
+      max-width: 68ch;
+      font-size: 18px;
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 28px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tags li {
+      background: var(--teal);
+      color: #f6f1e8;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    section {
+      margin: 28px 0;
+    }
+
+    h2 {
+      font-family: Georgia, "Palatino Linotype", serif;
+      font-size: 28px;
+      margin: 0 0 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .card, .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .num {
+      display: inline-block;
+      min-width: 28px;
+      color: var(--copper);
+      font-weight: 700;
+    }
+
+    .card h3 {
+      margin: 8px 0 4px;
+      font-size: 16px;
+    }
+
+    .card p, .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--teal-soft);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .step {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .step strong { display: block; margin-bottom: 4px; }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .panel { padding: 18px; }
+
+    .panel ol, .panel ul { margin: 8px 0 0; padding-left: 18px; }
+
+    pre {
+      margin: 14px 0 0;
+      background: #1c1915;
+      color: #f6f1e8;
+      border-radius: 12px;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    footer {
+      padding: 8px 0 40px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .grid, .flow, .split { grid-template-columns: 1fr; }
+      header { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">Sistema de Personas</div>
+      <a class="repo" href="https://github.com/fernandohg-0/SISTEMAS_PERSONAS">Ver código en GitHub</a>
+    </header>
+
+    <section class="hero">
+      <p class="kicker">Java · JPA · Hibernate · DAO · MySQL</p>
+      <h1>Registro de personas desde la terminal.</h1>
+      <p class="lead">
+        Aplicación de consola que lista, agrega, busca, actualiza y elimina personas
+        en MySQL. El menú no habla con la base de datos: llama a una capa DAO, y
+        Hibernate traduce esos objetos Java en SQL.
+      </p>
+      <ul class="tags">
+        <li>Java 17</li>
+        <li>Maven</li>
+        <li>JPA 3.1</li>
+        <li>Hibernate 6</li>
+        <li>MySQL</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Qué hace</h2>
+      <p>
+        Al ejecutarse se conecta a MySQL en <code>localhost:3306</code>, abre la unidad
+        de persistencia y muestra este menú. La base se llama <code>escuela</code> y la
+        tabla <code>persona</code> guarda id, nombre, edad y correo.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <span class="num">01</span>
+          <h3>Mostrar todas</h3>
+          <p>Lista las personas ordenadas por id.</p>
+        </article>
+        <article class="card">
+          <span class="num">02</span>
+          <h3>Agregar</h3>
+          <p>Pide nombre, edad y correo, y guarda el registro.</p>
+        </article>
+        <article class="card">
+          <span class="num">03</span>
+          <h3>Buscar por ID</h3>
+          <p>Localiza una persona o avisa si no existe.</p>
+        </article>
+        <article class="card">
+          <span class="num">04</span>
+          <h3>Actualizar</h3>
+          <p>Muestra los datos actuales y guarda los nuevos.</p>
+        </article>
+        <article class="card">
+          <span class="num">05</span>
+          <h3>Eliminar</h3>
+          <p>Borra la persona con el id indicado.</p>
+        </article>
+        <article class="card">
+          <span class="num">00</span>
+          <h3>Salir</h3>
+          <p>Cierra el menú y la conexión JPA.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cómo está organizado</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Capa</th>
+            <th>Clase</th>
+            <th>Función</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Entidad</td>
+            <td><code>modelo/Persona.java</code></td>
+            <td>Representa la tabla con <code>@Entity</code>, <code>@Id</code> y <code>@Column</code>.</td>
+          </tr>
+          <tr>
+            <td>Contrato DAO</td>
+            <td><code>dao/PersonaDAO.java</code></td>
+            <td>Define el CRUD sin decir cómo se guardan los datos.</td>
+          </tr>
+          <tr>
+            <td>Implementación</td>
+            <td><code>dao/impl/PersonaDAOImpl.java</code></td>
+            <td>Ejecuta el CRUD con <code>EntityManager</code> y transacciones.</td>
+          </tr>
+          <tr>
+            <td>Conexión</td>
+            <td><code>conexion/JPAUtil.java</code></td>
+            <td>Crea y cierra el <code>EntityManagerFactory</code> hacia MySQL.</td>
+          </tr>
+          <tr>
+            <td>Configuración</td>
+            <td><code>META-INF/persistence.xml</code></td>
+            <td>Declara la unidad <code>SistemaPersonasPU</code> y a Hibernate como proveedor.</td>
+          </tr>
+          <tr>
+            <td>Interfaz</td>
+            <td><code>prueba/PruebaPersona.java</code></td>
+            <td>Menú de consola. Es la clase principal de Maven.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="flow">
+        <div class="step"><strong>1. Menú</strong><span>PruebaPersona</span></div>
+        <div class="step"><strong>2. DAO</strong><span>PersonaDAOImpl</span></div>
+        <div class="step"><strong>3. JPA</strong><span>EntityManager / Hibernate</span></div>
+        <div class="step"><strong>4. MySQL</strong><span>escuela.persona</span></div>
+      </div>
+    </section>
+
+    <section class="split">
+      <div class="panel">
+        <h2>Requisitos</h2>
+        <ul>
+          <li>Java 17</li>
+          <li>Maven</li>
+          <li>MySQL en <code>localhost</code>, puerto <code>3306</code></li>
+          <li>Usuario y contraseña en <code>PruebaPersona.java</code> (por defecto <code>root</code> / <code>root</code>)</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Cómo ejecutarlo</h2>
+        <ol>
+          <li>Enciende MySQL.</li>
+          <li>Ajusta usuario y contraseña si hace falta.</li>
+          <li>Desde la carpeta del proyecto corre:</li>
+        </ol>
+        <pre><code>mvn compile exec:java</code></pre>
+        <p style="margin-top:12px">También se puede abrir como proyecto Maven en NetBeans. Si el usuario de MySQL tiene permisos, Hibernate crea la base <code>escuela</code> y la tabla <code>persona</code>. El script <code>sql/escuela.sql</code> sirve para crearlas a mano.</p>
+      </div>
+    </section>
+
+    <footer>
+      Esta página es la presentación del proyecto. El programa se ejecuta en tu computadora porque necesita MySQL; GitHub Pages solo publica este sitio estático.
+    </footer>
+  </div>
+</body>
+</html>
