@@ -1,6 +1,6 @@
 # Sistema de Personas
 
-Sitio publicado: [https://fernandohg-0.github.io/SISTEMAS_PERSONAS/](https://fernandohg-0.github.io/SISTEMAS_PERSONAS/)
+Sitio con el menú en el navegador: [https://fernandohg-0.github.io/SISTEMAS_PERSONAS/](https://fernandohg-0.github.io/SISTEMAS_PERSONAS/)
 
 Aplicación de consola en Java que administra personas en MySQL. Permite listar, agregar, buscar, actualizar y eliminar registros desde un menú en terminal, usando **JPA** con **Hibernate** y el patrón **DAO**.
 
@@ -76,4 +76,4 @@ La URL de conexión usa `createDatabaseIfNotExist=true` y Hibernate está en mod
 
 ## Sitio en GitHub Pages
 
-La página pública sale de `index.html` en la raíz de la rama `main`. El archivo `.nojekyll` hace que GitHub Pages publique ese HTML tal cual, sin procesarlo con Jekyll.
+`index.html` es el frente del menú de la terminal: mostrar, agregar, buscar, actualizar y eliminar. GitHub Pages no puede ejecutar Java ni MySQL, así que esa página guarda las personas en el navegador. El programa original sigue siendo la consola con `mvn compile exec:java`.
